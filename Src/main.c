@@ -19,16 +19,30 @@
 #include <stdint.h>
 #include <stdio.h>
 
+
+
+
 #define ADC_BASE_ADDRESS 0x40012000UL
 
 #define ADC_CR1_OFFSET 0x04UL
 
 #define ADC_CR1_REG_ADDR (ADC_BASE_ADDRESS + ADC_CR1_OFFSET)
 
+//Enable ADC clock so we can actual set the ADC
+#define RCC_BASE_ADDR 0x40023800UL
+
+#define RCC_APB2_ENR_OFFSET 0x44UL
+
+#define RCC_APB2_ENR_ADDR (RCC_BASE_ADDR + RCC_APB2_ENR_OFFSET)
 
 
 int main(void)
 {
+	//first enable peripheral clock for ADC 1
+	uint32_t *pRccApb2Enr = (uint32_t *) RCC_APB2_ENR_ADDR;
+	*pRccApb2Enr |=(1 << 8);
+
+	// now enable ADC 1
 	uint32_t *pAdcCr1Reg = (uint32_t *)ADC_CR1_REG_ADDR;
 
 	*pAdcCr1Reg |= (1 << 8);
